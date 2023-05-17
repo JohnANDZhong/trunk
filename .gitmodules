@@ -1,0 +1,6 @@
+[submodule "Module/utils"]
+	path = Module/utils
+	url = git@github.com:JohnANDZhong/utils.git
+[submodule "Module/sqlite"]
+	path = Module/sqlite
+	url = git@github.com:JohnANDZhong/sqlite.git
