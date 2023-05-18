@@ -4,3 +4,6 @@
 [submodule "Module/sqlite"]
 	path = Module/sqlite
 	url = git@github.com:JohnANDZhong/sqlite.git
+[submodule "Module/startup"]
+	path = Module/startup
+	url = git@github.com:JohnANDZhong/startup.git

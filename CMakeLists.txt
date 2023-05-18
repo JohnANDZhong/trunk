@@ -12,14 +12,15 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/output)
 
 # 添加子目录
 add_subdirectory(Module/utils)
+add_subdirectory(Module/startup)
 
 
 # 编译主程序
-add_executable(MP157Test src/main.c)
+add_executable(MP157Test src/app_main.c)
 
 # 头文件路径
-target_include_directories(MP157Test PUBLIC include/utils)
+target_include_directories(MP157Test PUBLIC include/sys)
 
 
 # 链接模块
-target_link_libraries(MP157Test utils)
+target_link_libraries(MP157Test utils startup)
