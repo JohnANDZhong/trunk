@@ -28,4 +28,6 @@ typedef long LONG;
 
 typedef unsigned long ULONG;
 
+typedef void VOID;
+
 #endif
