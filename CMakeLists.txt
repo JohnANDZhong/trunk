@@ -32,6 +32,7 @@ add_executable(MP157Test src/app_main.c)
 # 头文件路径
 target_include_directories(MP157Test PUBLIC include/sys)
 target_include_directories(MP157Test PUBLIC include/logger)
+target_include_directories(MP157Test PUBLIC include/queue)
 
 add_custom_target(CopyFile
     COMMAND echo "Copy file to remote"
