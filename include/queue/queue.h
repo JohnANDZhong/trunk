@@ -1,6 +1,6 @@
 #ifndef QUEUE_H__
 #define QUEUE_H__
-
+#include <mqueue.h>
 #include "sys_common.h"
 
 typedef mqd_t MSG_Q;
@@ -13,7 +13,7 @@ typedef mqd_t MSG_Q;
  * @param byteSize 队列的包长
  * @return INT32 创建成功还是失败  
  */
-MSG_Q sys_queue_create(MSG_Q md, char *name, UINT32 maxNum, UINT32 byteSize);
+INT32 sys_queue_create(MSG_Q *id, char *name, UINT32 maxNum, UINT32 byteSize);
 
 //消息队列的发送
 /**
@@ -25,7 +25,7 @@ MSG_Q sys_queue_create(MSG_Q md, char *name, UINT32 maxNum, UINT32 byteSize);
  * @param iWaitTime 延时多久发送 ms
  * @return INT32 发送成功还是失败
  */
-INT32 sys_queue_send(MSG_Q md, char*data, UINT32 byteSize, UINT32 iWaitTime);
+INT32 sys_queue_send(MSG_Q *id, void *data, UINT32 byteSize, UINT32 iWaitTime);
 
 /**
  * @brief 消息队列的发送
@@ -35,7 +35,7 @@ INT32 sys_queue_send(MSG_Q md, char*data, UINT32 byteSize, UINT32 iWaitTime);
  * @param byteSize 接受数据的大小
  * @return INT32 发送成功还是失败
  */
-INT32 sys_queue_recv(MSG_Q md, char *data, UINT32 byteSize);
+INT32 sys_queue_recv(MSG_Q *id, void *data, UINT32 byteSize);
 
 //消息队列的销毁
 /**
@@ -44,6 +44,6 @@ INT32 sys_queue_recv(MSG_Q md, char *data, UINT32 byteSize);
  * @param id 
  * @return INT32 
  */
-INT32 sys_queue_del(MSG_Q md);
+INT32 sys_queue_del(MSG_Q *id, char *name);
 
 #endif

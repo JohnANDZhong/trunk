@@ -12,6 +12,9 @@
 #define __SYS_COMMON_H__
 
 #include <stdio.h>
+#define  OK 0
+#define ERROR -1
+
 typedef int INT32;
 
 typedef unsigned int UINT32;
