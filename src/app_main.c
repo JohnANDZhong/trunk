@@ -2,10 +2,10 @@
 #include "sys_common.h"
 #include "sys_logger.h"
 #include  "queue.h"
-#define  QNAME "/home/lzj/git/trunk/build/q_test"
+#define  QNAME "/myqueue"
 #define  MAX_MSG_NUM  10
-#define  MAX_MSG_SIZE 1024
-MSG_Q *id =NULL ;
+#define  MAX_MSG_SIZE 256
+MSG_Q id  ;
 //MSG_Q mq;
 
 //thread1
@@ -15,75 +15,83 @@ MSG_Q *id =NULL ;
 //while(1) 循环发送 50ms周期发
 VOID *send_thr1(VOID *)
 {
-    INT32 Data[10];
+    INT32 Data[MAX_MSG_SIZE];
     INT32 i;
-    for(i = 0; i < 10; i++)     //send massage
+    MSG_Q mqdes;
+
+    mqdes = mq_open(QNAME, O_WRONLY);
+    if(ERROR > mqdes)
     {
-        Data[i] = rand()%100;
+     LOG_MESSAGE(LOG_ERROR, "THR1 QUEUE_open fail");
     }
-    while(1)
-    {
-        if( OK != sys_queue_send(id, Data, sizeof(Data), 50))
+    
+        for(i = 0; i < MAX_MSG_SIZE; i++)     //send massage
         {
-            LOG_MESSAGE(LOG_ERROR,"send_thr fail");
-            break;
+            Data[i] = i;
+        
+            if( OK != sys_queue_send(&id, Data, MAX_MSG_SIZE, 50))
+            {
+                LOG_MESSAGE(LOG_ERROR,"send_thr fail");
+                break;
+            }
         }
-       return NULL;
-    }
+   
+    mq_close(mqdes);
+    
 
 }
 VOID *rcv_thr2(VOID *)
 {
-    INT32 data_rv[10];
-    while(1)
-    {
-        if(OK != sys_queue_recv(id, data_rv,  sizeof(data_rv)))
-        {
-            LOG_MESSAGE(LOG_ERROR, "psys_queue_recv fail");
-            break;
+    INT32 data_rv[MAX_MSG_SIZE];
+    INT32  i;
+    MSG_Q mqdes;
+
+    mqdes = mq_open(QNAME,O_RDONLY);
+    if( ERROR > mqdes)
+   {
+     LOG_MESSAGE(LOG_ERROR, "sys_ queue_create fail");
+   }
+   
+         for(i = 0; i < MAX_MSG_SIZE; i++) 
+        {   
+            if(OK != sys_queue_recv(&id, data_rv,  sizeof(data_rv)))
+            {
+                LOG_MESSAGE(LOG_ERROR, "psys_queue_recv fail");
+                break;
+            }
+           printf("rcv:%d",data_rv[i]);
         }
-    }
     
+    mq_close(mqdes);
 }
 INT32 app_component_init(VOID)
 {
     LOG_MESSAGE(LOG_INFO, "component init start");
 
-    pthread_t id1, id2;
-/* if(mq_unlink(QNAME) != 0)
+    pthread_t thread1 ,thread2;
+    //sys_queue_create(&mq)
+    if( OK != sys_queue_create(&id, QNAME, MAX_MSG_NUM, MAX_MSG_SIZE))
     {
-        perror("mq_ulink");
-        return ERROR;
+        LOG_MESSAGE(LOG_ERROR, "sys_ queue_create fail");
     }
-  */  
-   if( OK != sys_queue_create(id, QNAME, MAX_MSG_NUM, MAX_MSG_SIZE))
-   {
-     LOG_MESSAGE(LOG_ERROR, "sys_ queue_create fail");
-   }
 
-   
-    if(0 != pthread_create(&id1, NULL, send_thr1, NULL))
+    //创建两个线程
+    //pthread_create(thread1) 接收线程
+    //phtered_create(thread2) 发送线程
+    if(0 != pthread_create(&thread1, NULL, send_thr1, NULL))
     {
         LOG_MESSAGE(LOG_ERROR, "pthread 1 create fail");
         return ERROR;
     }
-    
 
-
-    if(0 != pthread_create(&id2, NULL, rcv_thr2, NULL))
+    if(0 != pthread_create(&thread2, NULL, rcv_thr2, NULL))
     {
         LOG_MESSAGE(LOG_ERROR, "pthread 2 create fail");
         return ERROR;
     }
-
+    pthread_join(thread1,NULL);
+    pthread_join(thread2,NULL);
     LOG_MESSAGE(LOG_ERROR, "component init finish");
-   
-    pthread_join(id1,NULL);
-     pthread_join(id2,NULL);
-    //sys_queue_create(&mq)
-    //创建两个线程
-    //pthread_create(thread1) 接收线程
-    //phtered_create(thread2) 发送线程
     return 0;
 }
 
@@ -92,7 +100,8 @@ INT32 app_component_start(VOID)
 {
    
     LOG_MESSAGE(LOG_INFO, "component start");
-    
+   
+    sys_queue_del(&id, QNAME);
     LOG_MESSAGE(LOG_INFO, "component start finish");
    // LOG_MESSAGE(LOG_INFO, WANGQIANG);
 
