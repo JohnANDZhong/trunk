@@ -2,15 +2,17 @@
 #include "sys_common.h"
 #include "sys_logger.h"
 #include  "queue.h"
-
-MSG_Q *id = 0;
+#define  QNAME "/home/lzj/git/trunk/build/q_test"
+#define  MAX_MSG_NUM  10
+#define  MAX_MSG_SIZE 1024
+MSG_Q *id =NULL ;
 //MSG_Q mq;
 
 //thread1
 //while(1)循环接收 50ms周期收
 
 //thread2
-//while(1)循环发送 50ms周期发
+//while(1) 循环发送 50ms周期发
 VOID *send_thr1(VOID *)
 {
     INT32 Data[10];
@@ -48,8 +50,13 @@ INT32 app_component_init(VOID)
     LOG_MESSAGE(LOG_INFO, "component init start");
 
     pthread_t id1, id2;
-    
-   if( OK != sys_queue_create(id, "create!", 100, 1024))
+/* if(mq_unlink(QNAME) != 0)
+    {
+        perror("mq_ulink");
+        return ERROR;
+    }
+  */  
+   if( OK != sys_queue_create(id, QNAME, MAX_MSG_NUM, MAX_MSG_SIZE))
    {
      LOG_MESSAGE(LOG_ERROR, "sys_ queue_create fail");
    }
