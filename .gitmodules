@@ -8,5 +8,5 @@
 	path = Module/startup
 	url = git@github.com:JohnANDZhong/startup.git
 [submodule "Module/camera"]
-	path = Module/camera
-	url = git@github.com:JohnANDZhong/camera.git
+    path = Module/camera
+    url = git@github.com:JohnANDZhong/camera.git
