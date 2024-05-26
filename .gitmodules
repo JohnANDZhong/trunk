@@ -10,3 +10,6 @@
 [submodule "Module/camera"]
 	path = Module/camera
 	url = git@github.com:JohnANDZhong/camera.git
+[submodule "include"]
+	path = include
+	url = git@github.com:JohnANDZhong/include.git
