@@ -27,17 +27,17 @@ add_subdirectory(Module/startup)
 
 
 # 编译主程序
-add_executable(MP157Test src/app_main.c)
+add_executable(camera src/app_main.c)
 
 # 头文件路径
-target_include_directories(MP157Test PUBLIC include/sys)
-target_include_directories(MP157Test PUBLIC include/logger)
-target_include_directories(MP157Test PUBLIC include/queue)
+target_include_directories(camera PUBLIC include/sys)
+target_include_directories(camera PUBLIC include/logger)
+target_include_directories(camera PUBLIC include/queue)
 
 add_custom_target(CopyFile
     COMMAND echo "Copy file to remote"
-    COMMAND scp build/bin/MP157Test  root@192.168.7.1:/home/root
+    COMMAND scp build/bin/camera  root@192.168.7.1:/home/root
 )
 
 # 链接模块
-target_link_libraries(MP157Test utils startup)
+target_link_libraries(camera utils startup)
